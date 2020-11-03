@@ -41,13 +41,13 @@
 // Basic settings
 //
 
-#define ET_MODEL            		ET_MODEL_ET4				// Mandatory. Available values [ET_MODEL_ET4 ,ET_MODEL_ET4_PLUS, ET_MODEL_ET4X, ET_MODEL_ET4_PRO, ET_MODEL_ET5, ET_MODEL_ET5X, ET_MODEL_ET5_PRO]
-//#define ET_BOARD            		ET_BOARD_SILENT				// Optional. Available values [ET_BOARD_SILENT, ET_BOARD_NOISY]
-#define ET_LEVELLING        		ET_LV_BLTOUCH				// Optional. Available values [ET_LV_NONE, ET_LV_BLTOUCH, ET_LV_CAPACITIVE, ET_LV_FILM_STRIP]
+#define ET_MODEL            		ET_MODEL_ET4_PRO				// Mandatory. Available values [ET_MODEL_ET4 ,ET_MODEL_ET4_PLUS, ET_MODEL_ET4X, ET_MODEL_ET4_PRO, ET_MODEL_ET5, ET_MODEL_ET5X, ET_MODEL_ET5_PRO]
+#define ET_BOARD            		ET_BOARD_SILENT				// Optional. Available values [ET_BOARD_SILENT, ET_BOARD_NOISY]
+#define ET_LEVELLING        		ET_LV_MOUNTED_PROBE				// Optional. Available values [ET_LV_NONE, ET_LV_BLTOUCH, ET_LV_CAPACITIVE, ET_LV_FILM_STRIP]
 #define ET_Z_HOMING_DIR	  			ET_Z_HOMING_DIR_DOWN		// Optional. Available values [ET_Z_HOMING_DIR_UP, ET_Z_HOMING_DIR_DOWN]
 //#define ET_MOD              		ET_MOD_NONE           		// Optional. Available values [ET_MOD_BMG, ET_MOD_BMG_MINI, ET_MOD_V6]. To select multiple mods use '|' to join. ex: (ET_MOD_BMG | ET_MOD_V6)
 #define ET_Z_ENDSTOP_POSTION      	ET_Z_ENDSTOP_POSTION_NONE	// Optional. Available values [ET_Z_ENDSTOP_POSTION_NONE, ET_Z_ENDSTOP_POSTION_TOP, ET_Z_ENDSTOP_POSTION_BOTTOM]
-#define ET_CUSTOM_MACHINE_NAME 		"Anet ET4 A4988 BLTOUCH" 	// Optional
+#define ET_CUSTOM_MACHINE_NAME 		"Anet ET4Pro TMC2209" 	// Optional
 
 /*  !!! BASIC POST installation configuration steps !!!
  *
