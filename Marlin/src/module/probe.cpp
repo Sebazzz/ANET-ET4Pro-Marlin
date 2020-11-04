@@ -504,9 +504,9 @@ bool Probe::probe_down_to_z(const float z, const feedRate_t fr_mm_s) {
 float Probe::run_z_probe(const bool sanity_check/*=true*/) {
   DEBUG_SECTION(log_probe, "Probe::run_z_probe", DEBUGGING(LEVELING));
 
-  auto try_to_probe = [&](PGM_P const plbl, const float &z_probe_low_point, const feedRate_t fr_mm_s, const bool scheck, const float clearance) {
-    #if ENABLED(FIX_MOUNTED_PROBE)
-      if((0 == READ(OPTO_SWITCH_PIN)))
+  auto tare_probe= [](bool force) {
+    #if ENABLED(FIX_MOUNTED_PROBE) && PIN_EXISTS(OPTO_SWITCH)
+      if((0 == READ(OPTO_SWITCH_PIN)) || force)
       {
         SERIAL_ECHOLN("FIX_MOUNTED_PROBE: Taring the probe");
         WRITE(COM_PIN, HIGH);
@@ -515,6 +515,10 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
         delay(200);
       }
     #endif
+  };
+
+  auto try_to_probe = [&](PGM_P const plbl, const float &z_probe_low_point, const feedRate_t fr_mm_s, const bool scheck, const float clearance) {
+    tare_probe(/*force: */ false);
 
     // Do a first probe at the fast speed
     const bool probe_fail = probe_down_to_z(z_probe_low_point, fr_mm_s),            // No probe trigger?
@@ -551,6 +555,8 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
     // Raise to give the probe clearance
     do_blocking_move_to_z(current_position.z + Z_CLEARANCE_MULTI_PROBE, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
 
+    // Tare probe to reset
+    tare_probe(/*force: */ true);
   #elif Z_PROBE_SPEED_FAST != Z_PROBE_SPEED_SLOW
 
     // If the nozzle is well over the travel height then
@@ -558,8 +564,12 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
     const float z = Z_CLEARANCE_DEPLOY_PROBE + 5.0 + (offset.z < 0 ? -offset.z : 0);
     if (current_position.z > z) {
       // Probe down fast. If the probe never triggered, raise for probe clearance
-      if (!probe_down_to_z(z, MMM_TO_MMS(Z_PROBE_SPEED_FAST)))
+      if (!probe_down_to_z(z, MMM_TO_MMS(Z_PROBE_SPEED_FAST))) {
         do_blocking_move_to_z(current_position.z + Z_CLEARANCE_BETWEEN_PROBES, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
+
+        // Tare probe to reset
+        tare_probe(/*force: */ true);
+      }
     }
   #endif
 
@@ -579,6 +589,8 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
   #endif
     {
       // Probe downward slowly to find the bed
+      tare_probe(/*force: */ false);
+
       if (try_to_probe(PSTR("SLOW"), z_probe_low_point, MMM_TO_MMS(Z_PROBE_SPEED_SLOW),
                        sanity_check, Z_CLEARANCE_MULTI_PROBE) ) return NAN;
 
@@ -607,7 +619,11 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
           #if EXTRA_PROBING > 0
             < TOTAL_PROBING - 1
           #endif
-        ) do_blocking_move_to_z(z + Z_CLEARANCE_MULTI_PROBE, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
+        ) {
+          do_blocking_move_to_z(z + Z_CLEARANCE_MULTI_PROBE, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
+
+          tare_probe(/*force: */ true);
+        }
       #endif
     }
 
