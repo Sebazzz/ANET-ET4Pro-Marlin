@@ -1,6 +1,7 @@
-# Marlin for ET4/5 series 3D printers
+# Marlin for the Anet ET4 Pro
 
-This project is an effort to try to adapt the Anet ET4/ET5 motherboard and display for use with Marlin.
+This project is an effort to try to adapt Marlin for use with the Anet ET4 Pro. This project is based on the [original fork of Marlin](https://github.com/davidtgbe/Marlin) modified to make it directly usable for Anet ET4 Pro printers.
+
 Anyone can contribute to completing this project. Feedback is also welcome.
 
 ## Current status
